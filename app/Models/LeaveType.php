@@ -18,4 +18,10 @@ class LeaveType extends Model
     {
         return $this->hasMany(LeaveRequest::class);
     }
+
+    /** Hanya Cuti Tahunan yang memotong saldo cuti. */
+    public function deductsBalance(): bool
+    {
+        return $this->name === 'Cuti Tahunan';
+    }
 }

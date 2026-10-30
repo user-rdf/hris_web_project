@@ -33,9 +33,17 @@ class LeaveRequest extends Model
         return $this->belongsTo(User::class, 'approved_by');
     }
 
-    /** Jumlah hari cuti (termasuk hari mulai dan hari akhir). */
+    /** Jumlah hari kerja (Senin-Jumat) dalam rentang cuti, termasuk hari mulai dan akhir. */
     public function getDaysAttribute(): int
     {
-        return (int) $this->start_date->diffInDays($this->end_date) + 1;
+        $days = 0;
+
+        for ($day = $this->start_date->copy(); $day->lte($this->end_date); $day->addDay()) {
+            if (! $day->isWeekend()) {
+                $days++;
+            }
+        }
+
+        return $days;
     }
 }
