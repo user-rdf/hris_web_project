@@ -9,9 +9,18 @@
 <body class="bg-light">
 
 @auth
-<nav class="navbar navbar-dark bg-primary mb-4">
+<nav class="navbar navbar-expand navbar-dark bg-primary mb-4">
     <div class="container">
         <a class="navbar-brand" href="{{ route('dashboard') }}">HRIS</a>
+
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a></li>
+            @if (auth()->user()->isAdmin())
+                <li class="nav-item"><a class="nav-link" href="{{ route('employees.index') }}">Karyawan</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('departments.index') }}">Departemen</a></li>
+            @endif
+        </ul>
+
         <div class="d-flex align-items-center gap-3 text-white">
             <span>{{ auth()->user()->name }}
                 <span class="badge bg-light text-primary">{{ auth()->user()->role }}</span>
@@ -25,9 +34,12 @@
 </nav>
 @endauth
 
-<div class="container">
+<div class="container pb-5">
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if (session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
     @yield('content')

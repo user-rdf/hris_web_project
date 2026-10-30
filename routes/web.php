@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,8 +23,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // SEMENTARA: hanya untuk menguji RoleMiddleware, nanti dihapus
-    Route::get('/admin-area', function () {
-        return 'Halaman khusus admin.';
-    })->middleware('role:admin');
+    // Hanya admin: kelola departemen dan karyawan
+    Route::middleware('role:admin')->group(function () {
+        Route::resource('departments', DepartmentController::class)->except('show');
+        Route::resource('employees', EmployeeController::class)->except('show');
+    });
 });
