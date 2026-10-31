@@ -17,9 +17,13 @@
             <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('attendance.index') }}">Absensi</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('leave-requests.index') }}">Cuti</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('performance-reviews.index') }}">Evaluasi</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('payrolls.index') }}">Payroll</a></li>
+
             @if (auth()->user()->isManager() || auth()->user()->isAdmin())
                 <li class="nav-item"><a class="nav-link" href="{{ route('leave-approvals.index') }}">Persetujuan Cuti</a></li>
             @endif
+            
             @if (auth()->user()->isAdmin())
                 <li class="nav-item"><a class="nav-link" href="{{ route('employees.index') }}">Karyawan</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('departments.index') }}">Departemen</a></li>

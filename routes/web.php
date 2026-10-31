@@ -7,6 +7,8 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\OfficeSettingController;
+use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\PerformanceReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -43,6 +45,19 @@ Route::middleware('auth')->group(function () {
         Route::patch('/leave-requests/{leaveRequest}/approve', [LeaveRequestController::class, 'approve'])->name('leave-requests.approve');
         Route::patch('/leave-requests/{leaveRequest}/reject', [LeaveRequestController::class, 'reject'])->name('leave-requests.reject');
     }); 
+
+    // Evaluasi kinerja: semua role bisa melihat, hanya manager/admin yang mengelola
+    Route::get('/performance-reviews', [PerformanceReviewController::class, 'index'])->name('performance-reviews.index');
+    Route::middleware('role:manager,admin')->group(function () {
+        Route::resource('performance-reviews', PerformanceReviewController::class)
+            ->only(['create', 'store', 'edit', 'update', 'destroy']);
+    });
+
+    // Payroll: admin melihat semua dan generate, yang lain hanya slip sendiri (dijaga Policy)
+    Route::get('/payrolls', [PayrollController::class, 'index'])->name('payrolls.index');
+    Route::post('/payrolls/generate', [PayrollController::class, 'generate'])
+        ->middleware('role:admin')->name('payrolls.generate');
+    Route::get('/payrolls/{payroll}', [PayrollController::class, 'show'])->name('payrolls.show');
 
     // Hanya admin
     Route::middleware('role:admin')->group(function () {

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Payroll extends Model
 {
     protected $fillable = [
-        'user_id', 'period', 'basic_salary', 'allowance',
+        'user_id', 'period', 'basic_salary', 'allowance', 'late_days', 'absent_days',
         'late_deduction', 'absent_deduction', 'net_salary',
     ];
 
