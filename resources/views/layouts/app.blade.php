@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     @include('layouts._head')
-    <title>@yield('title', 'Beranda') - HRIS</title>
+    <title>@yield('title', 'Beranda') - KelolaKita</title>
 </head>
 <body>
 @php($me = auth()->user())
@@ -10,7 +10,7 @@
 <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
 
 <aside class="sidebar" id="sidebar">
-    <a href="{{ route('dashboard') }}" class="brand"><i class="bi bi-people-fill"></i> HRIS</a>
+    <a href="{{ route('dashboard') }}" class="brand"><i class="bi bi-people-fill"></i> KelolaKita</a>
 
     <nav class="nav flex-column pb-4">
         <div class="nav-label">Menu</div>

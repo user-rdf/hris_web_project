@@ -4,7 +4,7 @@
 
 @section('content')
 <h3 class="mb-1">Selamat datang</h3>
-<p class="text-muted mb-4">Masuk untuk melanjutkan ke HRIS.</p>
+<p class="text-muted mb-4">Masuk untuk melanjutkan ke KelolaKita.</p>
 
 <form method="POST" action="{{ route('login') }}">
     @csrf

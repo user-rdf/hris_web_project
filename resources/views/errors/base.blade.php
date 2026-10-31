@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     @include('layouts._head')
-    <title>@yield('code') - HRIS</title>
+    <title>@yield('code') - KelolaKita</title>
 </head>
 <body class="d-flex align-items-center justify-content-center" style="min-height: 100vh;">
     <div class="text-center px-3">
