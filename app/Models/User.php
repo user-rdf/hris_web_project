@@ -89,4 +89,9 @@ class User extends Authenticatable
     {
         return $this->role === 'employee';
     }
+
+    public function getRoleLabelAttribute(): string
+    {
+        return ['admin' => 'Admin HR', 'manager' => 'Manager', 'employee' => 'Karyawan'][$this->role] ?? $this->role;
+    }
 }

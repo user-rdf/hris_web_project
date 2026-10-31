@@ -1,59 +1,93 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'HRIS')</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    @include('layouts._head')
+    <title>@yield('title', 'Beranda') - HRIS</title>
 </head>
-<body class="bg-light">
+<body>
+@php($me = auth()->user())
 
-@auth
-<nav class="navbar navbar-expand navbar-dark bg-primary mb-4">
-    <div class="container">
-        <a class="navbar-brand" href="{{ route('dashboard') }}">HRIS</a>
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
 
-        <ul class="navbar-nav me-auto">
-            <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('attendance.index') }}">Absensi</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('leave-requests.index') }}">Cuti</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('performance-reviews.index') }}">Evaluasi</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('payrolls.index') }}">Payroll</a></li>
+<aside class="sidebar" id="sidebar">
+    <a href="{{ route('dashboard') }}" class="brand"><i class="bi bi-people-fill"></i> HRIS</a>
 
-            @if (auth()->user()->isManager() || auth()->user()->isAdmin())
-                <li class="nav-item"><a class="nav-link" href="{{ route('leave-approvals.index') }}">Persetujuan Cuti</a></li>
-            @endif
-            
-            @if (auth()->user()->isAdmin())
-                <li class="nav-item"><a class="nav-link" href="{{ route('employees.index') }}">Karyawan</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('departments.index') }}">Departemen</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('office-settings.edit') }}">Pengaturan Kantor</a></li>
-            @endif
-        </ul>
+    <nav class="nav flex-column pb-4">
+        <div class="nav-label">Menu</div>
+        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a class="nav-link {{ request()->routeIs('attendance.*') ? 'active' : '' }}" href="{{ route('attendance.index') }}">
+            <i class="bi bi-geo-alt"></i> Absensi
+        </a>
+        <a class="nav-link {{ request()->routeIs('leave-requests.*') ? 'active' : '' }}" href="{{ route('leave-requests.index') }}">
+            <i class="bi bi-calendar2-check"></i> Cuti
+        </a>
+        <a class="nav-link {{ request()->routeIs('performance-reviews.*') ? 'active' : '' }}" href="{{ route('performance-reviews.index') }}">
+            <i class="bi bi-star"></i> Evaluasi
+        </a>
+        <a class="nav-link {{ request()->routeIs('payrolls.*') ? 'active' : '' }}" href="{{ route('payrolls.index') }}">
+            <i class="bi bi-cash-coin"></i> {{ $me->isAdmin() ? 'Payroll' : 'Slip Gaji' }}
+        </a>
 
-        <div class="d-flex align-items-center gap-3 text-white">
-            <span>{{ auth()->user()->name }}
-                <span class="badge bg-light text-primary">{{ auth()->user()->role }}</span>
-            </span>
-            <form action="{{ route('logout') }}" method="POST" class="m-0">
-                @csrf
-                <button class="btn btn-sm btn-outline-light">Logout</button>
-            </form>
+        @if ($me->isManager() || $me->isAdmin())
+            <div class="nav-label">Persetujuan</div>
+            <a class="nav-link {{ request()->routeIs('leave-approvals.*') ? 'active' : '' }}" href="{{ route('leave-approvals.index') }}">
+                <i class="bi bi-check2-square"></i> Persetujuan Cuti
+            </a>
+        @endif
+
+        @if ($me->isAdmin())
+            <div class="nav-label">Administrasi</div>
+            <a class="nav-link {{ request()->routeIs('employees.*') ? 'active' : '' }}" href="{{ route('employees.index') }}">
+                <i class="bi bi-people"></i> Karyawan
+            </a>
+            <a class="nav-link {{ request()->routeIs('departments.*') ? 'active' : '' }}" href="{{ route('departments.index') }}">
+                <i class="bi bi-diagram-3"></i> Departemen
+            </a>
+            <a class="nav-link {{ request()->routeIs('office-settings.*') ? 'active' : '' }}" href="{{ route('office-settings.edit') }}">
+                <i class="bi bi-gear"></i> Pengaturan Kantor
+            </a>
+        @endif
+    </nav>
+</aside>
+
+<div class="main">
+    <header class="topbar d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+            <button type="button" class="btn btn-light d-lg-none" id="sidebar-toggle" aria-label="Menu">
+                <i class="bi bi-list fs-5"></i>
+            </button>
+            <div class="text-muted d-none d-sm-block">
+                <i class="bi bi-calendar3 me-1"></i>{{ now()->translatedFormat('l, d F Y') }}
+            </div>
         </div>
-    </div>
-</nav>
-@endauth
 
-<div class="container pb-5">
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if (session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
+        <div class="dropdown">
+            <button class="btn btn-light d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="avatar">{{ mb_strtoupper(mb_substr($me->name, 0, 1)) }}</span>
+                <span class="d-none d-sm-block text-start lh-sm">
+                    <span class="d-block fw-semibold small">{{ $me->name }}</span>
+                    <span class="d-block text-muted" style="font-size: .75rem;">{{ $me->role_label }}</span>
+                </span>
+                <i class="bi bi-chevron-down small"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                <li>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Keluar</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </header>
 
-    @yield('content')
+    <main class="content">
+        @yield('content')
+    </main>
 </div>
 
+@include('layouts._scripts')
 </body>
 </html>

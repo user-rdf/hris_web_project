@@ -32,11 +32,5 @@ class EmployeeRequest extends FormRequest
         ];
     }
 
-    public function attributes(): array
-    {
-        return [
-            'name' => 'nama', 'department_id' => 'departemen', 'manager_id' => 'atasan',
-            'basic_salary' => 'gaji pokok', 'allowance' => 'tunjangan', 'leave_balance' => 'jatah cuti',
-        ];
-    }
+    
 }
